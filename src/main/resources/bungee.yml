@@ -1,3 +1,11 @@
 name: BungeeDiscord
 version: ${project.version}
 main: io.github.dice10.bungeediscord.BungeeDiscord
+
+commands:
+  test:
+    description: test commands.
+    usage: /test
+  repo:
+    description: You report to administrator.
+    usage: /bDsicord repo title targetPlayer description

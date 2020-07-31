@@ -16,7 +16,6 @@ import org.javacord.api.entity.message.MessageAttachment;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 
-import javax.jws.soap.SOAPBinding;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +28,7 @@ public final class BungeeDiscord extends Plugin {
     private Configuration config;
     private String token;
     private long chatChannel_ID;
+    private long repoChannel_ID;
     private DiscordApi api;
 
     @Override
@@ -45,6 +45,7 @@ public final class BungeeDiscord extends Plugin {
                 config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
                 config.set("TOKEN","xxxxxxxxxxx");
                 config.set("TextChannel_ID","xxxxxxxxxxx");
+                config.set("reportChannel_ID","xxxxxxxxxxx");
                 config.set("chatLink",0);
                 ConfigurationProvider.getProvider(YamlConfiguration.class).save(config,file);
             }
@@ -53,8 +54,10 @@ public final class BungeeDiscord extends Plugin {
                 chatChannel_ID=(Long) config.get("TextChannel_ID");
                 setChatChannelID(chatChannel_ID);
                 token = (String) config.get("TOKEN");
+                repoChannel_ID = (Long) config.get("reportChannel_ID");
                 setToken(token);
                 DiscordApi $api = new DiscordApiBuilder().setToken(token).login().join();
+                $api.createBotInvite();
                 setApi($api);
                 Message message = new Message(token,$api,chatChannel_ID);
                 TextChannel channel = api.getTextChannelById(chatChannel_ID).get();
@@ -111,7 +114,7 @@ public final class BungeeDiscord extends Plugin {
                 getProxy().registerChannel("my:channel");
 
                 getLogger().info(token);
-
+                getProxy().getPluginManager().registerCommand(this,new Commands(token,$api,chatChannel_ID,repoChannel_ID));
                 getProxy().getConsole().sendMessage(ChatColor.AQUA+"Launch BungeeDiscord.");
             }
         } catch (IOException e) {
@@ -127,7 +130,7 @@ public final class BungeeDiscord extends Plugin {
         new MessageBuilder()
                 .append(":red_circle:" + "サーバーが停止しました。")
                 .send(_api.getTextChannelById(getChatChannelID()).get());
-        getProxy().getConsole().sendMessage(ChatColor.DARK_GREEN +"Stop BungeeDiscord.");
+        getProxy().getConsole().sendMessage(new TextComponent(ChatColor.DARK_GREEN +"Stop BungeeDiscord."));
     }
 
     public void setToken(String _token){

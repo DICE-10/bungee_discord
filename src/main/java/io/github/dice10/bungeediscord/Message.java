@@ -42,27 +42,6 @@ public class Message implements Listener{//, addMessageCreateListener {
         }
     }
 
-   /*@Override
-    public void onMessageCreate(MessageCreateEvent event) {
-        Message message = (Message) event.getMessage();
-        String name = event.getMessageAuthor().getName();
-        TextComponent msg;
-        String sendMessage = String.valueOf(message);
-        if (((org.javacord.api.entity.message.Message) message).getContent().equalsIgnoreCase("!ping")) {
-            event.getChannel().sendMessage("Pong!");
-        }
-        else if(!event.getMessageAuthor().isBotUser()){
-            /*if (chatLinkFlg == 1) {
-                msg = new TextComponent("§b§n["+name+"@Discord]§f"+sendMessage);
-                msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.google.com"));
-            }
-            else{
-                msg = new TextComponent("§b["+name+"@Discord]§f"+sendMessage);
-            //}
-            ProxyServer.getInstance().broadcast(msg);
-        }
-    }*/
-
     public void setToken(String _token){
         this.token = _token;
     }
@@ -86,4 +65,5 @@ public class Message implements Listener{//, addMessageCreateListener {
     public long getChatChannelID(){
         return this.chatChannelID;
     }
+
 }
