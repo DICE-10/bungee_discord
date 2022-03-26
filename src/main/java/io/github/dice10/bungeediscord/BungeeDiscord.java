@@ -4,6 +4,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -21,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public final class BungeeDiscord extends Plugin {
 
@@ -91,20 +93,36 @@ public final class BungeeDiscord extends Plugin {
                         EmbedBuilder emBuilder= new EmbedBuilder();
                         String UserName = null;
                         Collection<ProxiedPlayer> Users = ProxyServer.getInstance().getPlayers();
+                        Map<String, ServerInfo> servers = ProxyServer.getInstance().getServers();
+                        String info;
+                        String res = null;
                         if(Users.size() > 0) {
-                            for (ProxiedPlayer user : Users) {
-                                if (UserName == null) {
-                                    UserName = user.getDisplayName() + "\n";
-                                } else {
-                                    UserName += user.getDisplayName() + "\n";
+                            for(Map.Entry<String,ServerInfo> server : servers.entrySet()) {
+                                UserName = null;
+                                info = "\n **<"+server.getValue().getName() + ">** \n";
+                                for (ProxiedPlayer user : Users) {
+                                    if (UserName == null && user.getServer().getInfo().getName().equalsIgnoreCase(server.getValue().getName())) {
+                                        UserName = user.getDisplayName();
+                                    } else if(user.getServer().getInfo().getName().equalsIgnoreCase(server.getValue().getName())){
+                                        UserName += user.getDisplayName() + "\n";
+                                    }
+                                }
+                                if(UserName == null || UserName.length() <= 0){
+                                    UserName = "No User.";
+                                }
+                                if(res == null){
+                                    res = info + UserName + "\n";
+                                }
+                                else {
+                                    res += info + UserName + "\n";
                                 }
                             }
                         }
                         else{
-                            UserName = "No User.";
+                            res = "No User.";
                         }
                         msBuilder.setEmbed(emBuilder.setTitle("Online Users.")
-                                                    .setDescription(UserName)
+                                                    .setDescription(res)
                                                     .setColor(Color.GREEN)).send(api.getTextChannelById(channelID).get());
                     }
 

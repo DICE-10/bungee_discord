@@ -42,6 +42,9 @@ public class Commands extends Command {
                         .setFooter("通報者："+player.getName())
                         .setColor(Color.RED)).send(channel);
             }
+            else if(cmd.equalsIgnoreCase("bc")||cmd.equalsIgnoreCase("bungeediscord")){
+
+            }
         }
     }
 
